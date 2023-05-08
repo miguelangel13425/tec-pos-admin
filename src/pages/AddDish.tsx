@@ -1,0 +1,253 @@
+import { PhotoIcon } from "@heroicons/react/24/solid";
+import { useFormik } from "formik";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+
+import {
+  collection,
+  db,
+  doc,
+  getDownloadURL,
+  ref,
+  setDoc,
+  storage,
+  uploadBytesResumable,
+} from "../firebase";
+import useIngredients from "../hooks/useIngredients";
+
+const AddDish = () => {
+  const { ingredients } = useIngredients();
+  const navigate = useNavigate();
+
+  const [image, setImage] = useState(new Blob());
+  const [imagePreview, setImagePreview] = useState<string>("");
+
+  const formik = useFormik({
+    initialValues: {
+      name: "",
+      price: "",
+      description: "",
+      ingredients: [],
+    },
+    onSubmit: async (values, { resetForm }) => {
+      const newDish = doc(collection(db, "dishes"));
+      const storageRef = ref(storage, `dishes/${values.name}`);
+
+      await uploadBytesResumable(storageRef, image as Blob);
+      const imageUrl = await getDownloadURL(storageRef);
+
+      toast.promise(
+        setDoc(newDish, { ...values, image: imageUrl }, { merge: true }),
+        {
+          pending: "Agregando Platillo... 🍳",
+          success: "Platillo agregado 👌",
+          error: "Error al agregar Platillo 🤯",
+        }
+      );
+      resetForm();
+    },
+  });
+
+  return (
+    <form
+      className="p-12"
+      onSubmit={formik.handleSubmit}
+      onReset={formik.handleReset}
+    >
+      <div className="space-y-12">
+        <div className="border-b border-gray-900/10 pb-12">
+          <h2 className="text-base font-semibold leading-7 text-gray-900">
+            Informacion del platillo
+          </h2>
+          <p className="mt-1 text-sm leading-6 text-gray-600">
+            Favor de llenar todos los campos para poder registrar el platillo.
+          </p>
+
+          <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+            <div className="sm:col-span-3">
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium leading-6 text-gray-900"
+              >
+                Nombre
+              </label>
+              <div className="mt-2">
+                <input
+                  type="text"
+                  name="name"
+                  id="name"
+                  autoComplete="given-name"
+                  required
+                  onChange={formik.handleChange}
+                  value={formik.values.name}
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                />
+              </div>
+            </div>
+
+            <div className="sm:col-span-3">
+              <label
+                htmlFor="price"
+                className="block text-sm font-medium leading-6 text-gray-900"
+              >
+                Precio
+              </label>
+              <div className="mt-2">
+                <input
+                  type="number"
+                  name="price"
+                  id="price"
+                  autoComplete="family-name"
+                  required
+                  onChange={formik.handleChange}
+                  value={formik.values.price}
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                />
+              </div>
+            </div>
+
+            <div className="sm:col-span-4">
+              <label
+                htmlFor="description"
+                className="block text-sm font-medium leading-6 text-gray-900"
+              >
+                Descripcion
+              </label>
+              <div className="mt-2">
+                <input
+                  id="description"
+                  name="description"
+                  type="description"
+                  autoComplete="description"
+                  required
+                  onChange={formik.handleChange}
+                  value={formik.values.description}
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                />
+              </div>
+            </div>
+
+            <div className="sm:col-span-4 ">
+              <label
+                htmlFor="ingredients"
+                className="block text-sm font-medium leading-6 text-gray-900"
+              >
+                Ingredientes
+              </label>
+
+              <div className="mt-2 flex flex-col md:flex-row">
+                {ingredients.map((ingredient) => (
+                  <div className="mr-2" key={ingredient.id}>
+                    <span className="inline-flex rounded-md shadow-sm mr-2">
+                      {ingredient.name}
+                    </span>
+                    <input
+                      id="ingredients"
+                      name="ingredients"
+                      type="checkbox"
+                      autoComplete="ingredients-name"
+                      value={ingredient.id}
+                      onChange={formik.handleChange}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="col-span-full">
+          <label
+            htmlFor="cover-photo"
+            className="block text-sm font-medium leading-6 text-gray-900"
+          >
+            Imagen del platillo
+          </label>
+          <div
+            className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10"
+            onDragOver={(e) => {
+              e.preventDefault();
+            }}
+            onDrop={(e) => {
+              e.preventDefault();
+
+              setImage(e.dataTransfer.files[0]);
+              const fileReader = new FileReader();
+              fileReader.onload = () => {
+                if (fileReader.readyState === 2) {
+                  setImagePreview(fileReader.result as string);
+                }
+              };
+              fileReader.readAsDataURL(e.dataTransfer.files[0]);
+            }}
+          >
+            <div className="text-center">
+              {!imagePreview ? (
+                <PhotoIcon
+                  className="mx-auto h-12 w-12 text-gray-300"
+                  aria-hidden="true"
+                />
+              ) : (
+                <img
+                  // base64
+                  src={`${imagePreview}`}
+                  alt="avatar"
+                  className="mx-auto h-36 w-36 text-gray-300"
+                />
+              )}
+              <div className="mt-4 flex text-sm leading-6 text-gray-600">
+                <label
+                  htmlFor="image"
+                  className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
+                >
+                  <span>Subir archivo</span>
+                  <input
+                    id="image"
+                    name="image"
+                    type="file"
+                    className="sr-only"
+                    accept="image/*"
+                    onChange={(e) => {
+                      if (!e.target.files) return;
+                      setImage(e.target.files[0]);
+                      const fileReader = new FileReader();
+                      fileReader.onload = () => {
+                        if (fileReader.readyState === 2) {
+                          setImagePreview(fileReader.result as string);
+                        }
+                      };
+                      fileReader.readAsDataURL(e.target.files[0]);
+                    }}
+                  />
+                </label>
+                <p className="pl-1">o arrastra y suelta</p>
+              </div>
+              <p className="text-xs leading-5 text-gray-600">
+                PNG, JPG, GIF hasta 10MB
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-6 flex items-center justify-end gap-x-6">
+        <button
+          type="button"
+          className="text-sm font-semibold leading-6 text-gray-900"
+          onClick={() => navigate("/dishes")}
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+        >
+          Save
+        </button>
+      </div>
+      <ToastContainer />
+    </form>
+  );
+};
+
+export default AddDish;
