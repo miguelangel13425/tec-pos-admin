@@ -15,19 +15,12 @@ const Login = () => {
       toast.promise(
         signInWithEmailAndPassword(auth, values.email, values.password).then(
           (userCredential) => {
-            console.log(userCredential);
-            localStorage.setItem(
-              "email",
-              JSON.stringify(userCredential.user.email)
-            );
+            localStorage.setItem("email", userCredential.user.email as string);
             localStorage.setItem(
               "name",
-              JSON.stringify(userCredential.user.displayName)
+              userCredential.user.displayName as string
             );
-            localStorage.setItem(
-              "uid",
-              JSON.stringify(userCredential.user.uid)
-            );
+            localStorage.setItem("uid", userCredential.user.uid);
             navigate("/dashboard");
           }
         ),

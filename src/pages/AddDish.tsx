@@ -17,7 +17,7 @@ import {
 import useIngredients from "../hooks/useIngredients";
 
 const AddDish = () => {
-  const { ingredients } = useIngredients();
+  const { ingredients, restaurantUid } = useIngredients();
   const navigate = useNavigate();
 
   const [image, setImage] = useState(new Blob());
@@ -38,7 +38,11 @@ const AddDish = () => {
       const imageUrl = await getDownloadURL(storageRef);
 
       toast.promise(
-        setDoc(newDish, { ...values, image: imageUrl }, { merge: true }),
+        setDoc(
+          newDish,
+          { ...values, image: imageUrl, restaurantId: restaurantUid },
+          { merge: true }
+        ),
         {
           pending: "Agregando Platillo... 🍳",
           success: "Platillo agregado 👌",
@@ -46,6 +50,7 @@ const AddDish = () => {
         }
       );
       resetForm();
+      navigate("/dishes");
     },
   });
 

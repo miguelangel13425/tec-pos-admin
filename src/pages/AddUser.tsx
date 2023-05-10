@@ -14,9 +14,11 @@ import {
   storage,
   uploadBytesResumable,
 } from "../firebase";
+import useAuth from "../hooks/useAuth";
 
 const AddUser = () => {
   const navigate = useNavigate();
+  const { uid } = useAuth();
 
   const [image, setImage] = useState(new Blob());
   const [imagePreview, setImagePreview] = useState<string>("");
@@ -39,32 +41,34 @@ const AddUser = () => {
       const imageUrl = await getDownloadURL(storageRef);
 
       toast.promise(
-        setDoc(
-          newUser,
-          {
-            ...values,
-            username: (
-              formik.values.name.substring(0, 3) +
-              formik.values.lastName.substring(0, 3)
-            ).toLowerCase(),
-            image: imageUrl,
-          },
-          { merge: true }
-        ),
+        createUserWithEmailAndPassword(
+          auth,
+          values.email,
+          values.password
+        ).then((userCredential) => {
+          setDoc(
+            newUser,
+            {
+              ...values,
+              username: (
+                formik.values.name.substring(0, 3) +
+                formik.values.lastName.substring(0, 3)
+              ).toLowerCase(),
+              image: imageUrl,
+              restaurantId: uid,
+              uid: userCredential.user.uid,
+            },
+            { merge: true }
+          );
+        }),
+
         {
           pending: "Almacenando usuario... 🍳",
           success: "Usuario almacenado 👌",
           error: "Error al almacenar usuario 🤯",
         }
       );
-      toast.promise(
-        createUserWithEmailAndPassword(auth, values.email, values.password),
-        {
-          pending: "Almacenando usuario... 🍳",
-          success: "Usuario almacenado 👌",
-          error: "Error al almacenar usuario 🤯",
-        }
-      );
+
       resetForm();
     },
   });

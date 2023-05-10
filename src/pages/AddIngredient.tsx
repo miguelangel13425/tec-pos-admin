@@ -5,6 +5,7 @@ import { useFormik } from "formik";
 import { useNavigate } from "react-router-dom";
 
 const AddIngredient = () => {
+  const restaurantUid = localStorage.getItem("uid");
   const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
@@ -17,11 +18,18 @@ const AddIngredient = () => {
     onSubmit: async (values, { resetForm }) => {
       const newIngredient = doc(collection(db, "ingredients"));
 
-      toast.promise(setDoc(newIngredient, values, { merge: true }), {
-        pending: "Agregando ingrediente... 🍳",
-        success: "Ingrediente agregado 👌",
-        error: "Error al agregar ingrediente 🤯",
-      });
+      toast.promise(
+        setDoc(
+          newIngredient,
+          { ...values, restaurantId: restaurantUid },
+          { merge: true }
+        ),
+        {
+          pending: "Agregando ingrediente... 🍳",
+          success: "Ingrediente agregado 👌",
+          error: "Error al agregar ingrediente 🤯",
+        }
+      );
       resetForm();
     },
   });

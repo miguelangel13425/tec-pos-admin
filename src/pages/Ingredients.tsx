@@ -4,6 +4,7 @@ import useIngredients from "../hooks/useIngredients";
 const Ingredients = () => {
   const { ingredients } = useIngredients();
   const navigate = useNavigate();
+
   return (
     <div className="flex flex-col">
       <button

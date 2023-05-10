@@ -12,7 +12,6 @@ const Layout = ({ children }: React.PropsWithChildren) => {
   return (
     <>
       <Navbar handleDrawer={handleDrawer} />
-      dddd
       {isOpen && <DrawerNavigation handleDrawer={handleDrawer} />}
       {children}
     </>

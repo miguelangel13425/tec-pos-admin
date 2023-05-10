@@ -1,9 +1,10 @@
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useUsers from "../hooks/useUsers";
-
 const Users = () => {
   const navigate = useNavigate();
   const { users } = useUsers();
+
   return (
     <div className="flex flex-col">
       <button

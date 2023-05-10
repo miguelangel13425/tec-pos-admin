@@ -6,6 +6,7 @@ import Dashboard from "../pages/Dashboard";
 import Dishes from "../pages/Dishes";
 import Ingredients from "../pages/Ingredients";
 import Login from "../pages/Login";
+import Register from "../pages/Register";
 import Users from "../pages/Users";
 import PrivateRoute from "./PrivateRoute";
 
@@ -14,6 +15,7 @@ const Navigation = () => {
     <>
       <Routes>
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/" element={<PrivateRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/users" element={<Users />} />

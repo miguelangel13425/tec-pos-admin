@@ -1,9 +1,17 @@
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
 import useDishes from "../hooks/useDishes";
 
 const Dishes = () => {
-  const { dishes } = useDishes();
+  const { dishes, fetchDishes } = useDishes();
+  const { uid } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchDishes(uid as string);
+  }, []);
+
   return (
     <div className="flex flex-col">
       <button
