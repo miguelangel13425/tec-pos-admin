@@ -4,6 +4,9 @@ import AddIngridient from "../pages/AddIngredient";
 import AddUser from "../pages/AddUser";
 import Dashboard from "../pages/Dashboard";
 import Dishes from "../pages/Dishes";
+import EditDish from "../pages/EditDish";
+import EditIngredient from "../pages/EditIngredient";
+import EditUser from "../pages/EditUser";
 import Ingredients from "../pages/Ingredients";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
@@ -24,8 +27,11 @@ const Navigation = () => {
           <Route path="/add/dishes" element={<AddDish />} />
           <Route path="/add/ingredients" element={<AddIngridient />} />
           <Route path="/add/users" element={<AddUser />} />
-          <Route path="*" element={<h1>Not Found</h1>} />
+          <Route path="/edit/dishes" element={<EditDish />} />
+          <Route path="/edit/ingredients" element={<EditIngredient />} />
+          <Route path="/edit/users" element={<EditUser />} />
         </Route>
+        <Route path="*" element={<h1>Not Found</h1>} />
       </Routes>
     </>
   );

@@ -48,10 +48,10 @@ const Dishes = () => {
                       {dish.name}
                     </td>
                     <td className="whitespace-nowrap px-6 py-4">
-                      {dish.price}
+                      ${dish.price}
                     </td>
                     <td className="whitespace-nowrap px-6 py-4">
-                      {dish.description}
+                      {dish.description.substring(0, 20).concat("...")}
                     </td>
 
                     <td className="whitespace-nowrap px-6 py-4">

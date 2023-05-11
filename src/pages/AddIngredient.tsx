@@ -7,10 +7,10 @@ import { useNavigate } from "react-router-dom";
 const AddIngredient = () => {
   const restaurantUid = localStorage.getItem("uid");
   const navigate = useNavigate();
+
   const formik = useFormik({
     initialValues: {
       name: "",
-      unitPrice: "",
       totalPrice: "",
       stock: "",
       unit: "Gramos",
@@ -62,36 +62,17 @@ const AddIngredient = () => {
                   required
                   onChange={formik.handleChange}
                   value={formik.values.name}
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className="block w-full rounded-md border-0 px-2 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
             </div>
 
-            <div className="sm:col-span-1">
-              <label
-                htmlFor="unitPrice"
-                className="block text-sm font-medium leading-6 text-gray-900"
-              >
-                Precio Unitario ($MXN)
-              </label>
-              <div className="mt-2">
-                <input
-                  type="number"
-                  name="unitPrice"
-                  id="unitPrice"
-                  required
-                  onChange={formik.handleChange}
-                  value={formik.values.unitPrice}
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                />
-              </div>
-            </div>
-            <div className="sm:col-span-1">
+            <div className="sm:col-span-2">
               <label
                 htmlFor="totalPrice"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
-                Precio Total ($MXN)
+                Costo Total ($MXN)
               </label>
               <div className="mt-2">
                 <input
@@ -101,7 +82,7 @@ const AddIngredient = () => {
                   required
                   onChange={formik.handleChange}
                   value={formik.values.totalPrice}
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className="block w-full rounded-md border-0 px-2 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
                 {formik.errors.totalPrice ? (
                   <div>{formik.errors.totalPrice}</div>
@@ -124,7 +105,7 @@ const AddIngredient = () => {
                   required
                   onChange={formik.handleChange}
                   value={formik.values.stock}
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className="block w-full rounded-md border-0 px-2 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
             </div>
@@ -144,8 +125,9 @@ const AddIngredient = () => {
                   required
                   onChange={formik.handleChange}
                   defaultValue={formik.values.unit}
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+                  className="block w-full rounded-md border-0 px-2 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
                 >
+                  <option>Miligramos</option>
                   <option>Gramos</option>
                   <option>Kilogramos</option>
                   <option>Mililitros</option>
